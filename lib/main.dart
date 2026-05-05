@@ -74,7 +74,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
     // Enable microphone access in WebView
     final androidController =
         _controller.platform as AndroidWebViewController;
-    androidController.setOnPersistentPermissionRequest(
+    androidController.setOnPlatformPermissionRequest(
       (request) => request.grant(),
     );
   }
