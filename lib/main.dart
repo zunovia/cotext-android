@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:webview_flutter_android/webview_flutter_android.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();

@@ -10,6 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
   webview_flutter: ^4.10.0
+  webview_flutter_android: ^4.3.0
   permission_handler: ^11.3.1
 
 dev_dependencies:

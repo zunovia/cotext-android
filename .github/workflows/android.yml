@@ -68,6 +68,15 @@ jobs:
             sed -i "s/targetSdkVersion flutter.targetSdkVersion/targetSdkVersion 35/" android/app/build.gradle
           fi
 
+      - name: Fix NDK version for plugins
+        run: |
+          BUILD_FILE=$([ -f android/app/build.gradle.kts ] && echo "android/app/build.gradle.kts" || echo "android/app/build.gradle")
+          if grep -q "ndkVersion" "$BUILD_FILE"; then
+            sed -i 's/ndkVersion.*/ndkVersion = "27.0.12077973"/' "$BUILD_FILE"
+          else
+            sed -i '/compileSdk/a\    ndkVersion = "27.0.12077973"' "$BUILD_FILE"
+          fi
+
       - name: Upgrade AGP and Gradle for 16KB page size support
         run: |
           if [ -f android/settings.gradle ]; then
@@ -140,6 +149,15 @@ jobs:
           cp android-templates/settings.gradle android/settings.gradle
           # Upgrade Gradle wrapper to 8.9 (required by AGP 8.7.0)
           sed -i 's|gradle-.*-all.zip|gradle-8.9-all.zip|' android/gradle/wrapper/gradle-wrapper.properties
+
+      - name: Fix NDK version for plugins
+        run: |
+          BUILD_FILE="android/app/build.gradle"
+          if grep -q "ndkVersion" "$BUILD_FILE"; then
+            sed -i 's/ndkVersion.*/ndkVersion "27.0.12077973"/' "$BUILD_FILE"
+          else
+            sed -i '/compileSdk/a\    ndkVersion "27.0.12077973"' "$BUILD_FILE"
+          fi
 
       - name: Add Android permissions
         run: |
