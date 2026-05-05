@@ -1,0 +1,168 @@
+name: Build Android
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  debug:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.27.4'
+          channel: 'stable'
+          cache: true
+
+      - name: Restore debug keystore cache
+        id: keystore-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.android/debug.keystore
+          key: debug-keystore-v1
+
+      - name: Generate debug keystore if not cached
+        if: steps.keystore-cache.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p ~/.android
+          keytool -genkey -v \
+            -keystore ~/.android/debug.keystore \
+            -alias androiddebugkey \
+            -keyalg RSA \
+            -keysize 2048 \
+            -validity 10000 \
+            -storepass android \
+            -keypass android \
+            -dname "CN=Cotext Debug,O=SurCommunication,C=JP"
+
+      - name: Generate Android project
+        run: |
+          flutter create --project-name cotext --org online.surc --platforms android --no-pub .
+          git checkout -- pubspec.yaml
+
+      - name: Configure build.gradle
+        run: |
+          if [ -f android/app/build.gradle.kts ]; then
+            sed -i 's/applicationId = "online.surc.cotext"/applicationId = "online.surc.cotext"/' android/app/build.gradle.kts
+            sed -i 's/namespace = "online.surc.cotext"/namespace = "online.surc.cotext"/' android/app/build.gradle.kts
+            sed -i 's/minSdk = flutter.minSdkVersion/minSdk = 23/' android/app/build.gradle.kts
+            sed -i 's/minSdk = .*$/minSdk = 23/' android/app/build.gradle.kts
+            sed -i 's/targetSdk = flutter.targetSdkVersion/targetSdk = 35/' android/app/build.gradle.kts
+            sed -i 's/targetSdk = .*$/targetSdk = 35/' android/app/build.gradle.kts
+          elif [ -f android/app/build.gradle ]; then
+            sed -i "s/applicationId \"online.surc.cotext\"/applicationId \"online.surc.cotext\"/" android/app/build.gradle
+            sed -i "s/namespace \"online.surc.cotext\"/namespace \"online.surc.cotext\"/" android/app/build.gradle
+            sed -i "s/minSdk = flutter.minSdkVersion/minSdk = 23/" android/app/build.gradle
+            sed -i "s/minSdkVersion flutter.minSdkVersion/minSdkVersion 23/" android/app/build.gradle
+            sed -i "s/targetSdk = flutter.targetSdkVersion/targetSdk = 35/" android/app/build.gradle
+            sed -i "s/targetSdkVersion flutter.targetSdkVersion/targetSdkVersion 35/" android/app/build.gradle
+          fi
+
+      - name: Upgrade AGP and Gradle for 16KB page size support
+        run: |
+          if [ -f android/settings.gradle ]; then
+            sed -i 's/id "com.android.application" version "[^"]*"/id "com.android.application" version "8.7.0"/' android/settings.gradle
+          elif [ -f android/settings.gradle.kts ]; then
+            sed -i 's/id("com.android.application") version "[^"]*"/id("com.android.application") version "8.7.0"/' android/settings.gradle.kts
+          fi
+          sed -i 's|gradle-.*-all.zip|gradle-8.9-all.zip|' android/gradle/wrapper/gradle-wrapper.properties
+
+      - name: Add Android permissions
+        run: |
+          MANIFEST="android/app/src/main/AndroidManifest.xml"
+          sed -i '/<manifest/a\    <uses-permission android:name="android.permission.RECORD_AUDIO"/>\n    <uses-permission android:name="android.permission.INTERNET"/>\n    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>' "$MANIFEST"
+
+      - name: Set app label
+        run: |
+          MANIFEST="android/app/src/main/AndroidManifest.xml"
+          sed -i 's/android:label="cotext"/android:label="Cotext"/' "$MANIFEST"
+
+      - name: Generate app icons
+        run: dart run flutter_launcher_icons
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Build debug APK
+        run: flutter build apk --debug
+
+      - name: Upload debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: cotext-debug-apk
+          path: build/app/outputs/flutter-apk/app-debug.apk
+          retention-days: 30
+
+  release:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.27.4'
+          channel: 'stable'
+          cache: true
+
+      - name: Generate Android project
+        run: |
+          flutter create --project-name cotext --org online.surc --platforms android --no-pub .
+          git checkout -- pubspec.yaml
+
+      - name: Decode upload keystore from secret
+        run: |
+          echo "${{ secrets.UPLOAD_KEYSTORE }}" | base64 -d > android/app/upload-keystore.jks
+
+      - name: Configure build.gradle for release
+        run: |
+          # Write key.properties
+          printf 'storePassword=${{ secrets.KEYSTORE_PASSWORD }}\nkeyPassword=${{ secrets.KEYSTORE_PASSWORD }}\nkeyAlias=upload\nstoreFile=upload-keystore.jks\n' > android/key.properties
+          # Replace generated Groovy DSL files with repo templates
+          cp android-templates/app-build.gradle android/app/build.gradle
+          cp android-templates/settings.gradle android/settings.gradle
+          # Upgrade Gradle wrapper to 8.9 (required by AGP 8.7.0)
+          sed -i 's|gradle-.*-all.zip|gradle-8.9-all.zip|' android/gradle/wrapper/gradle-wrapper.properties
+
+      - name: Add Android permissions
+        run: |
+          MANIFEST="android/app/src/main/AndroidManifest.xml"
+          sed -i '/<manifest/a\    <uses-permission android:name="android.permission.RECORD_AUDIO"/>\n    <uses-permission android:name="android.permission.INTERNET"/>\n    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>' "$MANIFEST"
+
+      - name: Set app label
+        run: |
+          MANIFEST="android/app/src/main/AndroidManifest.xml"
+          sed -i 's/android:label="cotext"/android:label="Cotext"/' "$MANIFEST"
+
+      - name: Generate app icons
+        run: dart run flutter_launcher_icons
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Build release AAB
+        run: flutter build appbundle --release
+
+      - name: Upload release AAB
+        uses: actions/upload-artifact@v4
+        with:
+          name: cotext-release-aab
+          path: build/app/outputs/bundle/release/app-release.aab
+          retention-days: 90

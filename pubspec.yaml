@@ -1,0 +1,29 @@
+name: cotext
+description: Cotext - Voice communication support app (Android WebView wrapper)
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.6.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  webview_flutter: ^4.10.0
+  permission_handler: ^11.3.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_launcher_icons: ^0.14.3
+
+flutter_launcher_icons:
+  android: true
+  image_path: "assets/icons/ic_launcher.png"
+  adaptive_icon_background: "#3B6FD9"
+  adaptive_icon_foreground: "assets/icons/ic_launcher.png"
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/icons/

@@ -1,0 +1,29 @@
+// Template for Cotext release build.
+// Copied over the flutter-generated android/settings.gradle by CI
+// before building the release AAB.
+//
+// Based on Flutter 3.27 Groovy DSL new-project format.
+
+pluginManagement {
+    def flutterSdkPath = {
+        def properties = new Properties()
+        file("local.properties").withInputStream { properties.load(it) }
+        properties.getProperty("flutter.sdk")
+    }()
+    settings.ext.flutterSdkPath = flutterSdkPath
+
+    includeBuild("$flutterSdkPath/packages/flutter_tools/gradle")
+
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+
+plugins {
+    id "dev.flutter.flutter-plugin-loader" version "1.0.0"
+    id "com.android.application" version "8.7.0" apply false
+}
+
+include ":app"
