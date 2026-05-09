@@ -48,7 +48,7 @@ jobs:
       - name: Generate Android project
         run: |
           flutter create --project-name cotext --org online.surc --platforms android --no-pub .
-          git checkout -- pubspec.yaml
+          git checkout -- pubspec.yaml lib/
 
       - name: Configure build.gradle
         run: |
@@ -77,12 +77,14 @@ jobs:
             sed -i '/compileSdk/a\    ndkVersion = "27.0.12077973"' "$BUILD_FILE"
           fi
 
-      - name: Upgrade AGP and Gradle for 16KB page size support
+      - name: Upgrade AGP, Kotlin and Gradle for 16KB page size support
         run: |
           if [ -f android/settings.gradle ]; then
             sed -i 's/id "com.android.application" version "[^"]*"/id "com.android.application" version "8.7.0"/' android/settings.gradle
+            sed -i 's/id "org.jetbrains.kotlin.android" version "[^"]*"/id "org.jetbrains.kotlin.android" version "2.1.0"/' android/settings.gradle
           elif [ -f android/settings.gradle.kts ]; then
             sed -i 's/id("com.android.application") version "[^"]*"/id("com.android.application") version "8.7.0"/' android/settings.gradle.kts
+            sed -i 's/id("org.jetbrains.kotlin.android") version "[^"]*"/id("org.jetbrains.kotlin.android") version "2.1.0"/' android/settings.gradle.kts
           fi
           sed -i 's|gradle-.*-all.zip|gradle-8.9-all.zip|' android/gradle/wrapper/gradle-wrapper.properties
 
@@ -96,11 +98,11 @@ jobs:
           MANIFEST="android/app/src/main/AndroidManifest.xml"
           sed -i 's/android:label="cotext"/android:label="Cotext"/' "$MANIFEST"
 
-      - name: Generate app icons
-        run: dart run flutter_launcher_icons
-
       - name: Get dependencies
         run: flutter pub get
+
+      - name: Generate app icons
+        run: dart run flutter_launcher_icons
 
       - name: Build debug APK
         run: flutter build apk --debug
@@ -134,7 +136,7 @@ jobs:
       - name: Generate Android project
         run: |
           flutter create --project-name cotext --org online.surc --platforms android --no-pub .
-          git checkout -- pubspec.yaml
+          git checkout -- pubspec.yaml lib/
 
       - name: Decode upload keystore from secret
         run: |
@@ -144,7 +146,10 @@ jobs:
         run: |
           # Write key.properties
           printf 'storePassword=${{ secrets.KEYSTORE_PASSWORD }}\nkeyPassword=${{ secrets.KEYSTORE_PASSWORD }}\nkeyAlias=upload\nstoreFile=upload-keystore.jks\n' > android/key.properties
-          # Replace generated Groovy DSL files with repo templates
+          # Remove Kotlin DSL files so Groovy templates take priority
+          rm -f android/app/build.gradle.kts
+          rm -f android/settings.gradle.kts
+          # Replace with repo templates (Groovy DSL)
           cp android-templates/app-build.gradle android/app/build.gradle
           cp android-templates/settings.gradle android/settings.gradle
           # Upgrade Gradle wrapper to 8.9 (required by AGP 8.7.0)
@@ -169,11 +174,11 @@ jobs:
           MANIFEST="android/app/src/main/AndroidManifest.xml"
           sed -i 's/android:label="cotext"/android:label="Cotext"/' "$MANIFEST"
 
-      - name: Generate app icons
-        run: dart run flutter_launcher_icons
-
       - name: Get dependencies
         run: flutter pub get
+
+      - name: Generate app icons
+        run: dart run flutter_launcher_icons
 
       - name: Build release AAB
         run: flutter build appbundle --release
