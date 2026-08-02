@@ -30,7 +30,7 @@
   <!-- Japanese -->
   <div class="ja">
     <h1>プライバシーポリシー</h1>
-    <p class="updated">最終更新: 2026年5月5日</p>
+    <p class="updated">最終更新: 2026年8月3日</p>
 
     <div class="section">
       <h2>1. 運営者</h2>
@@ -43,9 +43,14 @@
 
     <div class="section">
       <h2>2. 収集する情報</h2>
+      <p>本アプリでは、以下の情報を取得します。「当法人のサーバーに保存」と記載したものは、お使いの端末の外に保存され、アプリを削除しても残ります（第6項をご参照ください）。</p>
       <ul>
-        <li><strong>年齢・性別</strong>: 初回登録時に入力いただきます。サービス改善の統計目的のみに使用します。</li>
-        <li><strong>マイク音声</strong>: 音声認識（STT）のためにリアルタイムで処理しますが、音声データはサーバーに保存されません。処理完了後に即座に破棄されます。</li>
+        <li><strong>年齢・性別</strong>: 利用登録時に入力いただきます。統計分析および不正利用の防止のため、<strong>当法人のサーバーに保存されます</strong>。</li>
+        <li><strong>メールアドレス</strong>（任意）: 登録時に入力された場合、または有料プランをご利用の場合に取得し、<strong>当法人のサーバーに保存されます</strong>。認証コードの送信およびお問い合わせへの返信に使用します。</li>
+        <li><strong>利用状況</strong>: 登録日時・機能の利用回数を、上限管理と不正利用の防止のため<strong>当法人のサーバーに保存します</strong>。</li>
+        <li><strong>マイク音声</strong>: 音声認識のため、第4項に記載する外部サービスへ送信されます。<strong>当法人のサーバーには保存されません</strong>。処理完了後に破棄されます。</li>
+        <li><strong>入力・変換されたテキスト</strong>: 読み上げ・翻訳・文章整形のため、第4項に記載する外部サービスへ送信されます。当法人のサーバーには保存されません。</li>
+        <li><strong>フィードバックの内容</strong>: フィードバック機能をご利用いただいた場合に限り、入力された本文が当法人の受信用サービスへ送信されます。</li>
         <li><strong>APIキー</strong>: ユーザーが任意で入力するGroq APIキーは、お使いの端末内にのみ保存されます。当法人のサーバーには送信されません。</li>
       </ul>
     </div>
@@ -56,6 +61,9 @@
         <li>音声のテキスト変換（リアルタイム字幕表示）</li>
         <li>テキストの音声合成（読み上げ機能）</li>
         <li>テキストの翻訳処理</li>
+        <li>利用登録の管理および本人確認（メールによる認証）</li>
+        <li>有料プランの決済処理およびご提供</li>
+        <li>利用回数の管理および不正利用の防止</li>
         <li>サービスの改善・統計分析</li>
       </ul>
     </div>
@@ -64,25 +72,40 @@
       <h2>4. 第三者サービス</h2>
       <p>本アプリでは以下の第三者サービスを利用しています:</p>
       <ul>
-        <li><strong>Groq</strong> (groq.com): 音声認識（Whisper）およびLLM処理。音声データはリアルタイム処理のみに使用され、Groq社に保存されません。</li>
+        <li><strong>Groq</strong> (groq.com): 音声認識（Whisper）およびLLM処理。音声・テキストはリアルタイム処理のみに使用されます。</li>
         <li><strong>Google Gemini</strong> (ai.google.dev): テキスト処理・翻訳。テキストデータのみ送信されます。</li>
         <li><strong>Microsoft Edge TTS</strong>: テキスト読み上げ機能。テキストデータのみ送信されます。</li>
+        <li><strong>Cloudflare</strong> (cloudflare.com): 本アプリの配信、および第2項の登録情報の保存。</li>
+        <li><strong>Resend</strong> (resend.com): 認証コード等のメール送信。メールアドレスを送信します。</li>
+        <li><strong>Stripe</strong> (stripe.com): 有料プランの決済処理。<strong>クレジットカード情報は当法人が取得・保存することはありません</strong>。</li>
       </ul>
       <p>各サービスのプライバシーポリシーもご参照ください。</p>
     </div>
 
     <div class="section">
       <h2>5. データの保存</h2>
+      <p><strong>お使いの端末内にのみ保存されるもの</strong></p>
       <ul>
-        <li>会話履歴: お使いの端末内にのみ保存されます（最大100件）。</li>
-        <li>設定情報: お使いの端末内にのみ保存されます。</li>
-        <li>音声データ: 一切保存されません。</li>
+        <li>会話履歴（最大100件）</li>
+        <li>設定情報</li>
+        <li>APIキー</li>
+      </ul>
+      <p><strong>当法人のサーバーに保存されるもの</strong></p>
+      <ul>
+        <li>登録情報（年齢・性別・メールアドレス〔入力された場合〕・登録日時・利用回数）</li>
+        <li>保存期間は定めておらず、削除のご依頼をいただくまで保管します。</li>
+      </ul>
+      <p><strong>保存しないもの</strong></p>
+      <ul>
+        <li>マイクで取得した音声データ</li>
+        <li>読み上げ・翻訳のために送信したテキスト</li>
       </ul>
     </div>
 
     <div class="section">
       <h2>6. データの削除</h2>
-      <p>アプリのアンインストールにより、端末内の全データが削除されます。設定画面からも履歴の削除が可能です。</p>
+      <p>アプリのアンインストールにより、<strong>お使いの端末内</strong>の全データが削除されます。設定画面からも履歴の削除が可能です。</p>
+      <p><strong>ただし、当法人のサーバーに保存された登録情報（第5項）は、アンインストールでは削除されません。</strong>削除をご希望の場合は、第9項の連絡先までご連絡ください。ご本人確認のうえ、速やかに削除いたします。</p>
     </div>
 
     <div class="section">
@@ -108,7 +131,7 @@
   <!-- English -->
   <div class="en">
     <h1>Privacy Policy</h1>
-    <p class="updated">Last updated: May 5, 2026</p>
+    <p class="updated">Last updated: August 3, 2026</p>
 
     <div class="section">
       <h2>1. Operator</h2>
@@ -121,9 +144,14 @@
 
     <div class="section">
       <h2>2. Information We Collect</h2>
+      <p>The App collects the following information. Items marked as "stored on our servers" are held outside your device and remain after the app is uninstalled (see Section 6).</p>
       <ul>
-        <li><strong>Age and Gender</strong>: Collected during initial registration for statistical purposes only.</li>
-        <li><strong>Microphone Audio</strong>: Processed in real-time for speech-to-text conversion. Audio data is NOT stored on any server and is discarded immediately after processing.</li>
+        <li><strong>Age and Gender</strong>: Entered during registration. <strong>Stored on our servers</strong> for statistical analysis and abuse prevention.</li>
+        <li><strong>Email Address</strong> (optional): Collected if provided at registration or when subscribing to a paid plan, and <strong>stored on our servers</strong>. Used to send verification codes and to reply to your inquiries.</li>
+        <li><strong>Usage Data</strong>: Registration date and feature usage counts are <strong>stored on our servers</strong> to enforce usage limits and prevent abuse.</li>
+        <li><strong>Microphone Audio</strong>: Transmitted to the third-party services listed in Section 4 for speech recognition. <strong>It is not stored on our servers</strong> and is discarded after processing.</li>
+        <li><strong>Text You Enter or Generate</strong>: Transmitted to the third-party services listed in Section 4 for text-to-speech, translation, and text refinement. It is not stored on our servers.</li>
+        <li><strong>Feedback Content</strong>: If you use the feedback feature, the text you submit is transmitted to our inbound messaging service.</li>
         <li><strong>API Keys</strong>: Groq API keys entered by users are stored only on the user's device. They are never sent to our servers.</li>
       </ul>
     </div>
@@ -134,6 +162,9 @@
         <li>Speech-to-text conversion (real-time subtitles)</li>
         <li>Text-to-speech synthesis (voice output)</li>
         <li>Text translation</li>
+        <li>Managing registrations and verifying users by email</li>
+        <li>Processing payments and providing paid plans</li>
+        <li>Enforcing usage limits and preventing abuse</li>
         <li>Service improvement and statistical analysis</li>
       </ul>
     </div>
@@ -142,25 +173,40 @@
       <h2>4. Third-Party Services</h2>
       <p>The App uses the following third-party services:</p>
       <ul>
-        <li><strong>Groq</strong> (groq.com): Speech recognition (Whisper) and LLM processing. Audio data is used for real-time processing only and is not stored by Groq.</li>
+        <li><strong>Groq</strong> (groq.com): Speech recognition (Whisper) and LLM processing. Audio and text are used for real-time processing only.</li>
         <li><strong>Google Gemini</strong> (ai.google.dev): Text processing and translation. Only text data is transmitted.</li>
         <li><strong>Microsoft Edge TTS</strong>: Text-to-speech functionality. Only text data is transmitted.</li>
+        <li><strong>Cloudflare</strong> (cloudflare.com): Hosting of the App and storage of the registration data described in Section 2.</li>
+        <li><strong>Resend</strong> (resend.com): Delivery of verification code emails. Your email address is transmitted.</li>
+        <li><strong>Stripe</strong> (stripe.com): Payment processing for paid plans. <strong>We never receive or store your credit card details.</strong></li>
       </ul>
       <p>Please refer to each service's privacy policy for their data practices.</p>
     </div>
 
     <div class="section">
       <h2>5. Data Storage</h2>
+      <p><strong>Stored only on your device</strong></p>
       <ul>
-        <li>Conversation history: Stored only on the user's device (up to 100 entries).</li>
-        <li>Settings: Stored only on the user's device.</li>
-        <li>Audio data: Never stored.</li>
+        <li>Conversation history (up to 100 entries)</li>
+        <li>Settings</li>
+        <li>API keys</li>
+      </ul>
+      <p><strong>Stored on our servers</strong></p>
+      <ul>
+        <li>Registration data (age, gender, email address if provided, registration date, usage counts)</li>
+        <li>No fixed retention period is set; the data is kept until you request its deletion.</li>
+      </ul>
+      <p><strong>Not stored</strong></p>
+      <ul>
+        <li>Audio captured through the microphone</li>
+        <li>Text transmitted for text-to-speech or translation</li>
       </ul>
     </div>
 
     <div class="section">
       <h2>6. Data Deletion</h2>
-      <p>Uninstalling the app will delete all data stored on the device. History can also be cleared from the settings screen.</p>
+      <p>Uninstalling the app deletes all data stored <strong>on your device</strong>. History can also be cleared from the settings screen.</p>
+      <p><strong>However, the registration data stored on our servers (Section 5) is not deleted by uninstalling the app.</strong> To request its deletion, please contact us using the details in Section 9. We will verify your identity and delete it promptly.</p>
     </div>
 
     <div class="section">
