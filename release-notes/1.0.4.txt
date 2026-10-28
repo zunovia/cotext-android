@@ -1,0 +1,15 @@
+<ja-JP>
+画面の端まで表示する新しい Android の表示方式に、古い Android でも対応しました。アプリを軽く速くする最適化を有効にしました。ページを読み込めなかったときの画面に、後ろの表示が重なって見えていたのを直しました。
+</ja-JP>
+<en-US>
+The app now draws edge to edge on older Android versions as well, and it is optimized to be lighter and faster. Fixed the "couldn't load the page" screen, which showed text from behind it.
+</en-US>
+<vi>
+Ứng dụng nay hiển thị tràn viền cả trên các phiên bản Android cũ và được tối ưu để nhẹ và nhanh hơn. Đã sửa lỗi màn hình "không thể tải trang" bị lẫn chữ phía sau.
+</vi>
+<zh-CN>
+现在在旧版 Android 上也能全屏（边到边）显示，并经过优化，更轻更快。修复了“无法加载页面”画面后面的文字透出来的问题。
+</zh-CN>
+<id>
+Aplikasi kini tampil penuh hingga tepi layar juga di versi Android lama, dan dioptimalkan agar lebih ringan dan cepat. Memperbaiki layar "halaman tidak dapat dimuat" yang tertimpa tulisan di belakangnya.
+</id>
