@@ -5,6 +5,8 @@ on:
     branches: [main]
   workflow_dispatch:
 
+# android/ is not committed: each job generates it with `flutter create` and applies
+# android-templates/ through scripts/prepare-android.sh (same toolchain as 913-plan).
 jobs:
   debug:
     runs-on: ubuntu-latest
@@ -20,7 +22,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.27.4'
+          flutter-version: '3.47.7'
           channel: 'stable'
           cache: true
 
@@ -46,60 +48,16 @@ jobs:
             -dname "CN=Cotext Debug,O=SurCommunication,C=JP"
 
       - name: Generate Android project
-        run: |
-          flutter create --project-name cotext --org online.surc --platforms android --no-pub .
-          git checkout -- pubspec.yaml lib/
-
-      - name: Configure build.gradle
-        run: |
-          if [ -f android/app/build.gradle.kts ]; then
-            sed -i 's/applicationId = "online.surc.cotext"/applicationId = "online.surc.cotext"/' android/app/build.gradle.kts
-            sed -i 's/namespace = "online.surc.cotext"/namespace = "online.surc.cotext"/' android/app/build.gradle.kts
-            sed -i 's/minSdk = flutter.minSdkVersion/minSdk = 24/' android/app/build.gradle.kts
-            sed -i 's/minSdk = .*$/minSdk = 24/' android/app/build.gradle.kts
-            sed -i 's/targetSdk = flutter.targetSdkVersion/targetSdk = 35/' android/app/build.gradle.kts
-            sed -i 's/targetSdk = .*$/targetSdk = 35/' android/app/build.gradle.kts
-          elif [ -f android/app/build.gradle ]; then
-            sed -i "s/applicationId \"online.surc.cotext\"/applicationId \"online.surc.cotext\"/" android/app/build.gradle
-            sed -i "s/namespace \"online.surc.cotext\"/namespace \"online.surc.cotext\"/" android/app/build.gradle
-            sed -i "s/minSdk = flutter.minSdkVersion/minSdk = 24/" android/app/build.gradle
-            sed -i "s/minSdkVersion flutter.minSdkVersion/minSdkVersion 24/" android/app/build.gradle
-            sed -i "s/targetSdk = flutter.targetSdkVersion/targetSdk = 35/" android/app/build.gradle
-            sed -i "s/targetSdkVersion flutter.targetSdkVersion/targetSdkVersion 35/" android/app/build.gradle
-          fi
-
-      - name: Fix NDK version for plugins
-        run: |
-          BUILD_FILE=$([ -f android/app/build.gradle.kts ] && echo "android/app/build.gradle.kts" || echo "android/app/build.gradle")
-          if grep -q "ndkVersion" "$BUILD_FILE"; then
-            sed -i 's/ndkVersion.*/ndkVersion = "27.0.12077973"/' "$BUILD_FILE"
-          else
-            sed -i '/compileSdk/a\    ndkVersion = "27.0.12077973"' "$BUILD_FILE"
-          fi
-
-      - name: Upgrade AGP, Kotlin and Gradle for 16KB page size support
-        run: |
-          if [ -f android/settings.gradle ]; then
-            sed -i 's/id "com.android.application" version "[^"]*"/id "com.android.application" version "8.7.0"/' android/settings.gradle
-            sed -i 's/id "org.jetbrains.kotlin.android" version "[^"]*"/id "org.jetbrains.kotlin.android" version "2.1.0"/' android/settings.gradle
-          elif [ -f android/settings.gradle.kts ]; then
-            sed -i 's/id("com.android.application") version "[^"]*"/id("com.android.application") version "8.7.0"/' android/settings.gradle.kts
-            sed -i 's/id("org.jetbrains.kotlin.android") version "[^"]*"/id("org.jetbrains.kotlin.android") version "2.1.0"/' android/settings.gradle.kts
-          fi
-          sed -i 's|gradle-.*-all.zip|gradle-8.9-all.zip|' android/gradle/wrapper/gradle-wrapper.properties
-
-      - name: Add Android permissions
-        run: |
-          MANIFEST="android/app/src/main/AndroidManifest.xml"
-          sed -i '/<manifest/a\    <uses-permission android:name="android.permission.RECORD_AUDIO"/>\n    <uses-permission android:name="android.permission.INTERNET"/>\n    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>' "$MANIFEST"
-
-      - name: Set app label
-        run: |
-          MANIFEST="android/app/src/main/AndroidManifest.xml"
-          sed -i 's/android:label="cotext"/android:label="Cotext"/' "$MANIFEST"
+        run: bash scripts/prepare-android.sh
 
       - name: Get dependencies
         run: flutter pub get
+
+      - name: Analyze
+        run: flutter analyze lib test
+
+      - name: Test
+        run: flutter test
 
       - name: Generate app icons
         run: dart run flutter_launcher_icons
@@ -129,50 +87,17 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.27.4'
+          flutter-version: '3.47.7'
           channel: 'stable'
           cache: true
 
       - name: Generate Android project
-        run: |
-          flutter create --project-name cotext --org online.surc --platforms android --no-pub .
-          git checkout -- pubspec.yaml lib/
+        run: bash scripts/prepare-android.sh
 
-      - name: Decode upload keystore from secret
+      - name: Write upload signing files from secrets
         run: |
           echo "${{ secrets.UPLOAD_KEYSTORE }}" | base64 -d > android/app/upload-keystore.jks
-
-      - name: Configure build.gradle for release
-        run: |
-          # Write key.properties
           printf 'storePassword=${{ secrets.KEYSTORE_PASSWORD }}\nkeyPassword=${{ secrets.KEYSTORE_PASSWORD }}\nkeyAlias=upload\nstoreFile=upload-keystore.jks\n' > android/key.properties
-          # Remove Kotlin DSL files so Groovy templates take priority
-          rm -f android/app/build.gradle.kts
-          rm -f android/settings.gradle.kts
-          # Replace with repo templates (Groovy DSL)
-          cp android-templates/app-build.gradle android/app/build.gradle
-          cp android-templates/settings.gradle android/settings.gradle
-          # Upgrade Gradle wrapper to 8.9 (required by AGP 8.7.0)
-          sed -i 's|gradle-.*-all.zip|gradle-8.9-all.zip|' android/gradle/wrapper/gradle-wrapper.properties
-
-      - name: Fix NDK version for plugins
-        run: |
-          BUILD_FILE="android/app/build.gradle"
-          if grep -q "ndkVersion" "$BUILD_FILE"; then
-            sed -i 's/ndkVersion.*/ndkVersion "27.0.12077973"/' "$BUILD_FILE"
-          else
-            sed -i '/compileSdk/a\    ndkVersion "27.0.12077973"' "$BUILD_FILE"
-          fi
-
-      - name: Add Android permissions
-        run: |
-          MANIFEST="android/app/src/main/AndroidManifest.xml"
-          sed -i '/<manifest/a\    <uses-permission android:name="android.permission.RECORD_AUDIO"/>\n    <uses-permission android:name="android.permission.INTERNET"/>\n    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>' "$MANIFEST"
-
-      - name: Set app label
-        run: |
-          MANIFEST="android/app/src/main/AndroidManifest.xml"
-          sed -i 's/android:label="cotext"/android:label="Cotext"/' "$MANIFEST"
 
       - name: Get dependencies
         run: flutter pub get
@@ -182,6 +107,14 @@ jobs:
 
       - name: Build release AAB
         run: flutter build appbundle --release
+
+      - name: Check the bundle is signed with the upload key
+        run: |
+          jarsigner -verify -certs build/app/outputs/bundle/release/app-release.aab | grep -q "jar verified"
+          keytool -printcert -jarfile build/app/outputs/bundle/release/app-release.aab | grep -q "Owner:"
+          if keytool -printcert -jarfile build/app/outputs/bundle/release/app-release.aab | grep -q "Android Debug"; then
+            echo "Bundle is debug-signed: key.properties was not picked up"; exit 1
+          fi
 
       - name: Upload release AAB
         uses: actions/upload-artifact@v4

@@ -1,7 +1,7 @@
 name: cotext
 description: Cotext - Voice communication support app (Android WebView wrapper)
 publish_to: 'none'
-version: 1.0.3+5
+version: 1.0.4+6
 
 environment:
   sdk: ^3.6.0
