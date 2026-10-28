@@ -110,9 +110,9 @@ jobs:
 
       - name: Check the bundle is signed with the upload key
         run: |
-          jarsigner -verify -certs build/app/outputs/bundle/release/app-release.aab | grep -q "jar verified"
-          keytool -printcert -jarfile build/app/outputs/bundle/release/app-release.aab | grep -q "Owner:"
-          if keytool -printcert -jarfile build/app/outputs/bundle/release/app-release.aab | grep -q "Android Debug"; then
+          jarsigner -J-Duser.language=en -verify -certs build/app/outputs/bundle/release/app-release.aab | grep -q "jar verified"
+          keytool -J-Duser.language=en -printcert -jarfile build/app/outputs/bundle/release/app-release.aab | grep -q "Owner:"
+          if keytool -J-Duser.language=en -printcert -jarfile build/app/outputs/bundle/release/app-release.aab | grep -q "Android Debug"; then
             echo "Bundle is debug-signed: key.properties was not picked up"; exit 1
           fi
 
