@@ -12,7 +12,8 @@ web/
 linux/
 macos/
 windows/
-test/
+test/*
+!test/strings_test.dart
 
 # IDE
 .idea/

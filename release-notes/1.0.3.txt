@@ -1,0 +1,15 @@
+<ja-JP>
+マイクの許可の案内と、ページを読み込めなかったときの画面が、スマホの言語（日本語・英語・ベトナム語・中国語・インドネシア語）で表示されるようになりました。
+</ja-JP>
+<en-US>
+The microphone permission message and the "couldn't load the page" screen now appear in your phone's language (Japanese, English, Vietnamese, Chinese or Indonesian).
+</en-US>
+<vi>
+Thông báo xin quyền micro và màn hình "không thể tải trang" giờ hiển thị theo ngôn ngữ của điện thoại (tiếng Nhật, Anh, Việt, Trung hoặc Indonesia).
+</vi>
+<zh-CN>
+麦克风权限提示和“无法加载页面”画面现在会以手机的语言显示（日语、英语、越南语、中文或印尼语）。
+</zh-CN>
+<id>
+Pesan izin mikrofon dan layar "halaman tidak dapat dimuat" kini tampil dalam bahasa ponsel Anda (Jepang, Inggris, Vietnam, Tiongkok, atau Indonesia).
+</id>

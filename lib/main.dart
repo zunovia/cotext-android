@@ -5,6 +5,8 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 
+import 'strings.dart';
+
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([
@@ -61,26 +63,28 @@ class _WebViewScreenState extends State<WebViewScreen> {
     _controller.loadRequest(Uri.parse(_appUrl));
   }
 
+  /// Read on every use so a language change in device settings applies at once.
+  AppStrings get _s =>
+      AppStrings.resolve(WidgetsBinding.instance.platformDispatcher.locales);
+
   void _showPermissionDeniedDialog() {
+    final s = _s;
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('マイクの許可が必要です'),
-        content: const Text(
-          'Cotextは音声機能を使用するためにマイクへのアクセスが必要です。\n'
-          '設定画面からマイクの使用を許可してください。',
-        ),
+        title: Text(s.micTitle),
+        content: Text(s.micBody),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(),
-            child: const Text('後で'),
+            child: Text(s.later),
           ),
           TextButton(
             onPressed: () {
               Navigator.of(ctx).pop();
               openAppSettings();
             },
-            child: const Text('設定を開く'),
+            child: Text(s.openSettings),
           ),
         ],
       ),
@@ -165,6 +169,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
   }
 
   Widget _buildErrorView() {
+    final s = _s;
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(32),
@@ -173,22 +178,22 @@ class _WebViewScreenState extends State<WebViewScreen> {
           children: [
             const Icon(Icons.wifi_off, size: 64, color: Colors.grey),
             const SizedBox(height: 16),
-            const Text(
-              'ページを読み込めませんでした',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            Text(
+              s.loadErrorTitle,
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 8),
-            const Text(
-              'インターネット接続を確認して、もう一度お試しください。',
-              style: TextStyle(fontSize: 14, color: Colors.grey),
+            Text(
+              s.loadErrorBody,
+              style: const TextStyle(fontSize: 14, color: Colors.grey),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 24),
             ElevatedButton.icon(
               onPressed: _retry,
               icon: const Icon(Icons.refresh),
-              label: const Text('再読み込み'),
+              label: Text(s.reload),
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF3B6FD9),
                 foregroundColor: Colors.white,
