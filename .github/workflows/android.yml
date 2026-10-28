@@ -55,15 +55,15 @@ jobs:
           if [ -f android/app/build.gradle.kts ]; then
             sed -i 's/applicationId = "online.surc.cotext"/applicationId = "online.surc.cotext"/' android/app/build.gradle.kts
             sed -i 's/namespace = "online.surc.cotext"/namespace = "online.surc.cotext"/' android/app/build.gradle.kts
-            sed -i 's/minSdk = flutter.minSdkVersion/minSdk = 23/' android/app/build.gradle.kts
-            sed -i 's/minSdk = .*$/minSdk = 23/' android/app/build.gradle.kts
+            sed -i 's/minSdk = flutter.minSdkVersion/minSdk = 24/' android/app/build.gradle.kts
+            sed -i 's/minSdk = .*$/minSdk = 24/' android/app/build.gradle.kts
             sed -i 's/targetSdk = flutter.targetSdkVersion/targetSdk = 35/' android/app/build.gradle.kts
             sed -i 's/targetSdk = .*$/targetSdk = 35/' android/app/build.gradle.kts
           elif [ -f android/app/build.gradle ]; then
             sed -i "s/applicationId \"online.surc.cotext\"/applicationId \"online.surc.cotext\"/" android/app/build.gradle
             sed -i "s/namespace \"online.surc.cotext\"/namespace \"online.surc.cotext\"/" android/app/build.gradle
-            sed -i "s/minSdk = flutter.minSdkVersion/minSdk = 23/" android/app/build.gradle
-            sed -i "s/minSdkVersion flutter.minSdkVersion/minSdkVersion 23/" android/app/build.gradle
+            sed -i "s/minSdk = flutter.minSdkVersion/minSdk = 24/" android/app/build.gradle
+            sed -i "s/minSdkVersion flutter.minSdkVersion/minSdkVersion 24/" android/app/build.gradle
             sed -i "s/targetSdk = flutter.targetSdkVersion/targetSdk = 35/" android/app/build.gradle
             sed -i "s/targetSdkVersion flutter.targetSdkVersion/targetSdkVersion 35/" android/app/build.gradle
           fi

@@ -29,7 +29,7 @@ android {
 
     defaultConfig {
         applicationId "online.surc.cotext"
-        minSdk 23
+        minSdk 24 // Play automatic integrity protection requires >= 24
         targetSdk 36
         versionCode flutter.versionCode
         versionName flutter.versionName
