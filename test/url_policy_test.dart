@@ -35,4 +35,24 @@ void main() {
     expect(shouldOpenExternally('data:text/plain,hello'), isFalse);
     expect(shouldOpenExternally('blob:https://koe-app.pages.dev/1234'), isFalse);
   });
+
+  test('lookalike hosts and risky schemes leave the WebView and never gain trust', () {
+    for (final url in [
+      'https://stripe.com/',
+      'https://stripe.com.evil.example/',
+      'https://koe-app.pages.dev.evil.example/',
+      'https://koe-app.pages.dev@evil.example/',
+      'https://evil.example/koe-app.pages.dev',
+      'http://stripe.com/',
+      'intent://scan/#Intent;scheme=zxing;end',
+      'tel:+810000000000',
+      'sms:+810000000000',
+      'file:///sdcard/a.html',
+    ]) {
+      expect(shouldOpenExternally(url), isTrue, reason: url);
+      expect(isTrustedUrl(url), isFalse, reason: url);
+    }
+    expect(shouldOpenExternally('HTTPS://KOE-APP.PAGES.DEV/x'), isFalse);
+    expect(isTrustedUrl('HTTPS://KOE-APP.PAGES.DEV/x'), isTrue);
+  });
 }
