@@ -1,15 +1,15 @@
 <ja-JP>
-新しいバージョンのAndroidでの画面の表示方式（画面全体を使う表示）への対応を改善しました。決済などのページは、アプリ内ではなくブラウザで開くようになりました。
+決済などのアプリ外のページは、アプリの中ではなくブラウザで開くようになりました。そのほか、細かな改善を行いました。
 </ja-JP>
 <en-US>
-Improved support for the newer Android display style, where the app uses the full screen. Payment and similar pages now open in your browser instead of inside the app.
+Payment and other outside pages now open in your browser instead of inside the app. Also includes minor improvements.
 </en-US>
 <vi>
-Cải thiện khả năng hỗ trợ kiểu hiển thị mới của Android, trong đó ứng dụng dùng toàn bộ màn hình. Các trang thanh toán và tương tự nay được mở bằng trình duyệt thay vì trong ứng dụng.
+Các trang bên ngoài như trang thanh toán nay được mở bằng trình duyệt thay vì trong ứng dụng. Ngoài ra còn có một số cải tiến nhỏ.
 </vi>
 <zh-CN>
-改进了对新版 Android 显示方式（应用使用全屏）的支持。付款等页面现在会在浏览器中打开，而不是在应用内打开。
+付款等应用外的页面现在会在浏览器中打开，而不是在应用内打开。此外还进行了一些小的改进。
 </zh-CN>
 <id>
-Meningkatkan dukungan untuk gaya tampilan Android yang lebih baru, di mana aplikasi menggunakan seluruh layar. Halaman pembayaran dan sejenisnya kini dibuka di browser, bukan di dalam aplikasi.
+Halaman luar seperti pembayaran kini dibuka di browser, bukan di dalam aplikasi. Juga mencakup beberapa perbaikan kecil.
 </id>
