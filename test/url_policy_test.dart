@@ -26,11 +26,11 @@ void main() {
     expect(shouldOpenExternally('market://details?id=online.surc.cotext'), isTrue);
   });
 
-  test('the app itself, Stripe Checkout and inline documents stay inside', () {
+  test('the app itself and inline documents stay inside', () {
     expect(shouldOpenExternally('https://koe-app.pages.dev/settings'), isFalse);
-    expect(shouldOpenExternally('https://checkout.stripe.com/c/pay/cs_test_123'), isFalse);
-    expect(shouldOpenExternally('https://hooks.stripe.com/3d_secure_2/hosted'), isFalse);
-    expect(shouldOpenExternally('https://stripe.com.evil.example/'), isTrue);
+    // The paid plan is gone, so Stripe pages no longer need to stay in the WebView.
+    expect(shouldOpenExternally('https://checkout.stripe.com/c/pay/cs_test_123'), isTrue);
+    expect(shouldOpenExternally('https://hooks.stripe.com/3d_secure_2/hosted'), isTrue);
     expect(shouldOpenExternally('about:blank'), isFalse);
     expect(shouldOpenExternally('data:text/plain,hello'), isFalse);
     expect(shouldOpenExternally('blob:https://koe-app.pages.dev/1234'), isFalse);
