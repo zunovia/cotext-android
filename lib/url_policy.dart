@@ -6,10 +6,13 @@ library;
 const String trustedHost = 'koe-app.pages.dev';
 const String appUrl = 'https://$trustedHost/';
 
-/// Hosts the web app sends the whole page to and expects to come back from in the
-/// same WebView. Stripe Checkout redirects back to koe-app.pages.dev after the
-/// paid sign-up; opening it in the browser would leave the result there.
-const Set<String> inAppHosts = {'checkout.stripe.com'};
+/// Sites the web app sends the whole page to and expects to come back from in the
+/// same WebView: Stripe Checkout (and its 3-D Secure pages such as
+/// hooks.stripe.com) redirects back to koe-app.pages.dev after the paid sign-up;
+/// opening it in the browser would leave the result there.
+const String inAppDomain = 'stripe.com';
+
+bool _isInAppHost(String host) => host == inAppDomain || host.endsWith('.$inAppDomain');
 
 /// True only for https pages on [trustedHost].
 bool isTrustedUrl(String? url) {
@@ -30,7 +33,7 @@ bool shouldOpenExternally(String url) {
     case 'javascript':
       return false;
     case 'https':
-      return uri.host != trustedHost && !inAppHosts.contains(uri.host);
+      return uri.host != trustedHost && !_isInAppHost(uri.host);
     default:
       // http, mailto, tel, intent, market, ...
       return true;
