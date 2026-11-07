@@ -173,7 +173,8 @@ class NativeSttController {
         bool granted;
         try {
           granted = await engine.hasMicPermission();
-        } catch (_) {
+        } catch (e) {
+          debugPrint('[stt] permission check failed: $e');
           granted = true;
         }
         if (generation != _generation) return;
