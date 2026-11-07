@@ -12,9 +12,12 @@ void main() {
 
     test('permission, language and network', () {
       expect(classifySttError('error_permission'), SttErrorKind.permission);
-      expect(classifySttError('error_insufficient_permissions'), SttErrorKind.permission);
-      expect(classifySttError('error_language_not_supported'), SttErrorKind.language);
-      expect(classifySttError('error_language_unavailable'), SttErrorKind.language);
+      expect(classifySttError('error_insufficient_permissions'),
+          SttErrorKind.permission);
+      expect(classifySttError('error_language_not_supported'),
+          SttErrorKind.language);
+      expect(classifySttError('error_language_unavailable'),
+          SttErrorKind.language);
       expect(classifySttError('error_network'), SttErrorKind.network);
       expect(classifySttError('error_network_timeout'), SttErrorKind.network);
       expect(classifySttError('error_server'), SttErrorKind.network);
@@ -36,7 +39,15 @@ void main() {
   });
 
   group('resolveLocaleId', () {
-    const device = ['en_US', 'en_GB', 'ja_JP', 'cmn_CN', 'vi_VN', 'in_ID', 'zh_TW'];
+    const device = [
+      'en_US',
+      'en_GB',
+      'ja_JP',
+      'cmn_CN',
+      'vi_VN',
+      'in_ID',
+      'zh_TW'
+    ];
 
     test('converts BCP-47 to the recognizer id', () {
       expect(resolveLocaleId('ja-JP', device), 'ja_JP');
@@ -95,7 +106,8 @@ void main() {
       await pumpEventQueue();
     }
 
-    test('start reports listening and forwards partial and final results', () async {
+    test('start reports listening and forwards partial and final results',
+        () async {
       await stt.start('ja-JP');
       expect(engine.listenCalls, ['ja_JP']);
       expect(sent.first, {'type': 'stt.state', 'listening': true});
@@ -110,7 +122,9 @@ void main() {
       ]);
     });
 
-    test('restarts after each utterance until stopped, without telling the page', () async {
+    test(
+        'restarts after each utterance until stopped, without telling the page',
+        () async {
       await stt.start('en-US');
       engine.result('hello', true);
       engine.status('notListening');
@@ -141,7 +155,8 @@ void main() {
       expect(types(), isNot(contains('stt.error')));
     });
 
-    test('a run that ends on a partial result keeps it as the final line', () async {
+    test('a run that ends on a partial result keeps it as the final line',
+        () async {
       await stt.start('ja-JP');
       engine.result('ありがとう', false);
       engine.status('notListening'); // no final and no done follow
@@ -164,7 +179,8 @@ void main() {
       expect(engine.listenCalls, hasLength(2));
     });
 
-    test('stop sends the pending partial as final before listening:false', () async {
+    test('stop sends the pending partial as final before listening:false',
+        () async {
       await stt.start('ja-JP');
       engine.result('途中まで', false);
       stt.stop();
@@ -193,7 +209,8 @@ void main() {
       expect(stt.isActive, isFalse);
     });
 
-    test('a language missing on the device is reported before listening', () async {
+    test('a language missing on the device is reported before listening',
+        () async {
       engine.locales = ['en_US'];
       await stt.start('vi-VN');
       expect(engine.listenCalls, isEmpty);
@@ -267,6 +284,34 @@ void main() {
       expect(engine.listenCalls, ['ja_JP', 'en_US']);
     });
 
+    test('start right after stop waits for the recognizer to finish stopping',
+        () async {
+      final gate = Completer<void>();
+      engine.stopGate = gate.future;
+      await stt.start('ja-JP');
+      stt.stop();
+      final restarted = stt.start('en-US');
+      await Future<void>.delayed(Duration.zero);
+      expect(engine.listenCalls, ['ja_JP'],
+          reason: 'must not listen while stopping');
+      gate.complete();
+      await restarted;
+      expect(engine.listenCalls, ['ja_JP', 'en_US']);
+    });
+
+    test('a start superseded while waiting for the stop never listens',
+        () async {
+      final gate = Completer<void>();
+      engine.stopGate = gate.future;
+      await stt.start('ja-JP');
+      stt.stop();
+      final restarted = stt.start('en-US');
+      stt.stop();
+      gate.complete();
+      await restarted;
+      expect(engine.listenCalls, ['ja_JP']);
+    });
+
     test('stop when idle sends nothing', () {
       stt.stop();
       expect(sent, isEmpty);
@@ -281,13 +326,16 @@ class FakeEngine implements SttEngine {
   List<String> locales = ['ja_JP', 'en_US', 'vi_VN', 'zh_CN', 'id_ID'];
   int initCalls = 0;
   int stopCalls = 0;
+  Future<void>? stopGate;
   final List<String> listenCalls = [];
   final List<void Function(String, bool)> _resultCallbacks = [];
   void Function(String)? _onStatus;
   void Function(String)? _onError;
 
-  void result(String text, bool isFinal) => _resultCallbacks.last(text, isFinal);
-  void staleResult(int run, String text, bool isFinal) => _resultCallbacks[run](text, isFinal);
+  void result(String text, bool isFinal) =>
+      _resultCallbacks.last(text, isFinal);
+  void staleResult(int run, String text, bool isFinal) =>
+      _resultCallbacks[run](text, isFinal);
   void status(String s) => _onStatus!(s);
   void error(String e) => _onError!(e);
 
@@ -319,7 +367,10 @@ class FakeEngine implements SttEngine {
   }
 
   @override
-  Future<void> stop() async => stopCalls++;
+  Future<void> stop() async {
+    stopCalls++;
+    await stopGate;
+  }
 }
 
 class FakeTimer implements Timer {

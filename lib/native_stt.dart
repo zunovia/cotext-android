@@ -44,14 +44,17 @@ enum SttErrorKind {
 /// Maps a speech_to_text error message (e.g. `error_no_match`) to what to do.
 SttErrorKind classifySttError(String errorMsg) {
   final msg = errorMsg.trim();
-  if (msg == 'error_no_match' || msg == 'error_speech_timeout') return SttErrorKind.silent;
+  if (msg == 'error_no_match' || msg == 'error_speech_timeout')
+    return SttErrorKind.silent;
   if (msg == 'error_permission' || msg == 'error_insufficient_permissions') {
     return SttErrorKind.permission;
   }
-  if (msg == 'error_language_not_supported' || msg == 'error_language_unavailable') {
+  if (msg == 'error_language_not_supported' ||
+      msg == 'error_language_unavailable') {
     return SttErrorKind.language;
   }
-  if (msg.startsWith('error_network') || msg == 'error_server') return SttErrorKind.network;
+  if (msg.startsWith('error_network') || msg == 'error_server')
+    return SttErrorKind.network;
   return SttErrorKind.retry;
 }
 
@@ -79,7 +82,9 @@ String? resolveLocaleId(String bcp47, List<String> available) {
   final lang = parts.first;
   final region = parts.length > 1 ? parts.last : null;
   final langs = _languageAliases[lang] ?? [lang];
-  final sameLanguage = available.where((id) => langs.contains(norm(id).split('_').first)).toList();
+  final sameLanguage = available
+      .where((id) => langs.contains(norm(id).split('_').first))
+      .toList();
   if (sameLanguage.isEmpty) return null;
   if (region != null) {
     for (final id in sameLanguage) {
@@ -144,13 +149,16 @@ class NativeSttController {
   bool _active = false;
   bool _listening = false; // what the web was last told
   String? _localeId;
-  int _generation = 0; // bumped for every listen() and stop; stale callbacks are ignored
+  int _generation =
+      0; // bumped for every listen() and stop; stale callbacks are ignored
   int _failures = 0;
   String _lastFailureCode = SttErrorCode.other;
   String _pendingPartial = '';
   bool _runEnded = false; // `done` and the fallback may both arrive for one run
   Timer? _restartTimer;
   Timer? _fallbackTimer;
+  Future<void>?
+      _pendingStop; // engine.stop() of the previous session, still running
 
   bool get isActive => _active;
 
@@ -159,6 +167,14 @@ class NativeSttController {
     _active = true;
     _failures = 0;
     final generation = ++_generation;
+
+    // stop() then start() in quick succession: let the recognizer finish stopping, or
+    // the new listen() runs while the old one is still shutting down.
+    final pendingStop = _pendingStop;
+    if (pendingStop != null) {
+      await pendingStop;
+      if (generation != _generation) return;
+    }
 
     if (!_initialized) {
       bool ok;
@@ -227,7 +243,8 @@ class NativeSttController {
           _failures = 0;
           if (isFinal) {
             _pendingPartial = '';
-            if (text.trim().isNotEmpty) send({'type': 'stt.final', 'text': text});
+            if (text.trim().isNotEmpty)
+              send({'type': 'stt.final', 'text': text});
           } else {
             _pendingPartial = text;
             send({'type': 'stt.partial', 'text': text});
@@ -314,7 +331,13 @@ class NativeSttController {
     _cancelTimers();
     _flushPartial();
     if (wasRunning && _initialized) {
-      unawaited(engine.stop().catchError((Object e) => debugPrint('[stt] stop failed: $e')));
+      final stopping = engine
+          .stop()
+          .catchError((Object e) => debugPrint('[stt] stop failed: $e'));
+      _pendingStop = stopping;
+      unawaited(stopping.whenComplete(() {
+        if (identical(_pendingStop, stopping)) _pendingStop = null;
+      }));
     }
     if (sendState) {
       _setListening(false, force: true);
