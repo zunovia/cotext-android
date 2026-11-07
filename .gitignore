@@ -12,8 +12,8 @@ web/
 linux/
 macos/
 windows/
-test/*
-!test/strings_test.dart
+# Sample test from `flutter create` (prepare-android.sh deletes it as well)
+test/widget_test.dart
 
 # IDE
 .idea/

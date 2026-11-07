@@ -12,6 +12,9 @@ class AppStrings {
     required this.loadErrorTitle,
     required this.loadErrorBody,
     required this.reload,
+    required this.updateReady,
+    required this.updateLater,
+    required this.updateRestart,
   });
 
   final String micTitle;
@@ -21,6 +24,11 @@ class AppStrings {
   final String loadErrorTitle;
   final String loadErrorBody;
   final String reload;
+
+  /// In-app update bar (top of the screen).
+  final String updateReady;
+  final String updateLater;
+  final String updateRestart;
 
   static const Map<String, AppStrings> all = {
     'ja': AppStrings(
@@ -32,6 +40,9 @@ class AppStrings {
       loadErrorTitle: 'ページを読み込めませんでした',
       loadErrorBody: 'インターネット接続を確認して、もう一度お試しください。',
       reload: '再読み込み',
+      updateReady: '新しい版の準備ができました。',
+      updateLater: 'あとで',
+      updateRestart: '再起動して更新',
     ),
     'en': AppStrings(
       micTitle: 'Microphone access needed',
@@ -42,6 +53,9 @@ class AppStrings {
       loadErrorTitle: "Couldn't load the page",
       loadErrorBody: 'Check your internet connection and try again.',
       reload: 'Reload',
+      updateReady: 'A new version is ready.',
+      updateLater: 'Later',
+      updateRestart: 'Restart to update',
     ),
     'vi': AppStrings(
       micTitle: 'Cần quyền truy cập micro',
@@ -52,6 +66,9 @@ class AppStrings {
       loadErrorTitle: 'Không thể tải trang',
       loadErrorBody: 'Vui lòng kiểm tra kết nối Internet rồi thử lại.',
       reload: 'Tải lại',
+      updateReady: 'Phiên bản mới đã sẵn sàng.',
+      updateLater: 'Để sau',
+      updateRestart: 'Khởi động lại để cập nhật',
     ),
     'zh': AppStrings(
       micTitle: '需要麦克风权限',
@@ -62,6 +79,9 @@ class AppStrings {
       loadErrorTitle: '无法加载页面',
       loadErrorBody: '请检查网络连接后重试。',
       reload: '重新加载',
+      updateReady: '新版本已准备就绪。',
+      updateLater: '稍后',
+      updateRestart: '重启以更新',
     ),
     'id': AppStrings(
       micTitle: 'Izin mikrofon diperlukan',
@@ -72,6 +92,9 @@ class AppStrings {
       loadErrorTitle: 'Halaman tidak dapat dimuat',
       loadErrorBody: 'Periksa koneksi internet Anda, lalu coba lagi.',
       reload: 'Muat ulang',
+      updateReady: 'Versi baru sudah siap.',
+      updateLater: 'Nanti',
+      updateRestart: 'Mulai ulang untuk memperbarui',
     ),
   };
 

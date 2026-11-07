@@ -15,10 +15,21 @@ void main() {
         s.loadErrorTitle,
         s.loadErrorBody,
         s.reload,
+        s.updateReady,
+        s.updateLater,
+        s.updateRestart,
       ]) {
         expect(text.trim(), isNotEmpty);
       }
     }
+  });
+
+  test('update bar texts are distinct within each language', () {
+    for (final s in AppStrings.all.values) {
+      expect({s.updateReady, s.updateLater, s.updateRestart}, hasLength(3));
+    }
+    expect(AppStrings.all['ja']!.updateRestart, '再起動して更新');
+    expect(AppStrings.all['en']!.updateReady, 'A new version is ready.');
   });
 
   test('first supported device language wins', () {

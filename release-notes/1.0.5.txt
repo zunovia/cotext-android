@@ -1,0 +1,15 @@
+<ja-JP>
+APIキーを設定しなくても、端末の音声認識ですぐに字幕を使えるようになりました（翻訳・句読点の自動補正は、無料のキーを設定すると使えます）。初めての方向けに使い方の案内を加えました。新しい版があるとアプリの中でお知らせし、再起動するだけで更新できます。字幕画面から1タップで「声を送る」、友だちに「すすめる」もできるようになりました。外部のリンクはブラウザで開くようにしました。
+</ja-JP>
+<en-US>
+Captions now work right away with your device's speech recognition, without setting up an API key (translation and automatic punctuation need a free key). Added a short guide for first-time users. The app now tells you when a new version is ready and updates with a simple restart. You can send feedback from the caption screen in one tap and recommend Cotext to friends. Links to other sites now open in your browser.
+</en-US>
+<vi>
+Giờ đây có thể dùng phụ đề ngay bằng tính năng nhận dạng giọng nói của thiết bị mà không cần cài đặt khóa API (dịch và tự động thêm dấu câu cần khóa miễn phí). Đã thêm phần hướng dẫn cho người dùng lần đầu. Ứng dụng sẽ thông báo khi có phiên bản mới và cập nhật chỉ bằng cách khởi động lại. Có thể gửi góp ý từ màn hình phụ đề chỉ với một chạm và giới thiệu Cotext cho bạn bè. Các liên kết đến trang khác nay mở bằng trình duyệt.
+</vi>
+<zh-CN>
+无需设置 API 密钥，即可使用设备自带的语音识别立即显示字幕（翻译和自动加标点需要设置免费密钥）。新增了面向首次使用者的使用指南。有新版本时会在应用内提示，只需重启即可完成更新。现在可以在字幕画面一键“发送意见”，也可以向朋友“推荐” Cotext。其他网站的链接改为在浏览器中打开。
+</zh-CN>
+<id>
+Teks (subtitle) kini bisa langsung digunakan dengan pengenalan suara perangkat, tanpa mengatur kunci API (terjemahan dan tanda baca otomatis memerlukan kunci gratis). Menambahkan panduan singkat untuk pengguna baru. Aplikasi kini memberi tahu saat versi baru siap dan cukup dimulai ulang untuk memperbarui. Anda dapat mengirim masukan dari layar teks dengan satu ketukan dan merekomendasikan Cotext kepada teman. Tautan ke situs lain kini dibuka di browser.
+</id>

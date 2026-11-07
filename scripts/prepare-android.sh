@@ -22,5 +22,14 @@ cp android-templates/MainActivity.kt "$KT_DIR/MainActivity.kt"
 MANIFEST=android/app/src/main/AndroidManifest.xml
 sed -i '/<manifest/a\    <uses-permission android:name="android.permission.RECORD_AUDIO"/>\n    <uses-permission android:name="android.permission.INTERNET"/>\n    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>' "$MANIFEST"
 sed -i 's/android:label="cotext"/android:label="Cotext"/' "$MANIFEST"
+# Android 11+ hides the speech recognition service from apps that do not declare it
+# (keyless captions through speech_to_text, and SpeechRecognizer.isRecognitionAvailable).
+RECOGNITION_INTENT='        <intent>\n            <action android:name="android.speech.RecognitionService"/>\n        </intent>'
+if grep -q '<queries>' "$MANIFEST"; then
+    sed -i "0,/<queries>/s##<queries>\n$RECOGNITION_INTENT#" "$MANIFEST"
+else
+    sed -i "s#</manifest>#    <queries>\n$RECOGNITION_INTENT\n    </queries>\n</manifest>#" "$MANIFEST"
+fi
 grep -q 'RECORD_AUDIO' "$MANIFEST"
 grep -q 'android:label="Cotext"' "$MANIFEST"
+grep -q 'android.speech.RecognitionService' "$MANIFEST"
